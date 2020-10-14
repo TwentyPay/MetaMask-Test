@@ -23,7 +23,7 @@ function App() {
           setReceiverBal(await web3.eth.getBalance(receiver));
         });
       } catch {
-        console.log("User denied account access")
+        console.log("User denied account access");
       }
     }
   });
@@ -55,7 +55,10 @@ function App() {
       >
         Enable Ethereum
       </button>
-      <h2>Account: {address}</h2>
+      <h2>
+        {ethereum && <p>Your Ethereum address: {address}</p>}
+        {!ethereum && <p style={{color: 'red'}}>Please use browser with Ethereum wallet</p>}
+      </h2>
       <button
         className="sendETH"
         onClick={sendETH}
