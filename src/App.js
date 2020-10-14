@@ -5,15 +5,13 @@ function App() {
 
   const ethereum = window.ethereum;
   const Web3 = require('web3');
+  const web3 = new Web3(ethereum);
   const [address, setAddress] = useState('Not set');
   const receiver = '0x8afB142655d14b2840489Aa512e798FC9deeFBC0';
   const [senderBal, setSenderBal] = useState('');
   const [receiverBal, setReceiverBal] = useState('');
 
-  const web3 = new Web3(ethereum);
-
   window.addEventListener('load', async () => {
-    if (ethereum) {
       try {
         ethereum.on('accountsChanged', async function (accounts) {
           console.log("Account was changed!");
@@ -25,26 +23,33 @@ function App() {
       } catch {
         console.log("User denied account access");
       }
-    }
   });
 
   async function getAccount() {
-    const accounts = await web3.eth.getAccounts();;
-    setAddress(accounts[0]);
-    setSenderBal(await web3.eth.getBalance(accounts[0]));
-    setReceiverBal(await web3.eth.getBalance(receiver));
+    if (web3) {
+      try {
+        await ethereum.enable()
+        const accounts = await web3.eth.getAccounts();;
+        console.log('accounts[0] in getAccounts is ' + accounts[0])
+        setAddress(accounts[0]);
+        setSenderBal(await web3.eth.getBalance(accounts[0]));
+        setReceiverBal(await web3.eth.getBalance(receiver));
+      } catch {
+        console.log("Please install MetaMask")
+      }
+    }
   }
 
   function sendETH() {
-    web3.eth.sendTransaction({
-      from: address,
-      to: receiver,
-      value: web3.utils.toHex(web3.utils.toWei('0.1')),
-    })
-    .then(async () => setSenderBal(await web3.eth.getBalance(address)))
-    .then(async () => setReceiverBal(await web3.eth.getBalance(receiver)))
-    .then((txHash) => console.log(txHash))
-    .catch((error) => console.error);
+      web3.eth.sendTransaction({
+        from: address,
+        to: receiver,
+        value: web3.utils.toHex(web3.utils.toWei('0.1')),
+      })
+      .then(async () => setSenderBal(await web3.eth.getBalance(address)))
+      .then(async () => setReceiverBal(await web3.eth.getBalance(receiver)))
+      .then((txHash) => console.log(txHash))
+      .catch((error) => console.error);
   }
 
   return (
