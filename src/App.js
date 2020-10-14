@@ -29,6 +29,11 @@ function App() {
 
   return (
     <div className="App">
+      <header className="App-header">
+        {ethereum && <p>Your Ethereum address: {address}</p>} 
+        {!ethereum && <p style={{color: 'red'}}>Please use browser with Ethereum wallet</p>}
+      </header>
+
       <button
         className="enableEthereumButton"
         onClick={getAccount}
